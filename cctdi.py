@@ -1,3 +1,23 @@
+import random
+
+def random_sample(iterator, count):
+    # Use a reservoir sampling technique to select count random lines
+    reservoir = []
+    line_number = 0
+
+    for line in iterator:
+        # Fill the reservoir with the first count lines
+        if len(reservoir) < count:
+            reservoir.append(line)
+        else:
+            # Randomly replace elements in the reservoir
+            random_index = random.randint(0, line_number)
+            if random_index < count:
+                reservoir[random_index] = line
+        line_number += 1
+
+    return reservoir
+
 def fingerprint_molecule(molecule):
     """
     Generate a fingerprint for a molecule using Indigo.
