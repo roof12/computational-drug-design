@@ -16,7 +16,7 @@ def main(molecule, ligands_file, top_count, log=None):
 
     i = 0
     for i, (mol, filename) in enumerate(molecules):
-        if log and i % 1 == 0: log.write(".")
+        if log and i % 10000 == 0: log.write(".")
         fingerprint = fingerprint_molecule(mol)
         if fingerprint is not None:
             similarity = indigo.similarity(molecule, mol, "tanimoto")
