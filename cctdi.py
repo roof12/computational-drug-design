@@ -18,7 +18,28 @@ def random_sample(iterator, count):
 
     return reservoir
 
-def fingerprint_molecule(molecule):
+def update_top_similarities(similarity_list, new_similarity, molecule, filename, top_count):
+    """
+    Update the list of top similarities with a new similarity score.
+
+    Args:
+        similarity_list (list): The current list of top similarities.
+        new_similarity (float): The new similarity score to be added.
+        molecule (Object): The molecule associated with the similarity score.
+        filename (str): The filename associated with the molecule.
+        top_count (int): The maximum number of top similarities to retain in the list.
+
+    Returns:
+        list: The updated list of top similarities, sorted by similarity score in descending order.
+    """
+
+    similarity_list.append((new_similarity, molecule, filename))
+    similarity_list.sort(reverse=True, key=lambda x: x[0])
+    return similarity_list[:top_count]
+
+# depends on indigo
+
+def fingerprint_molecule(molecule, fp_type="sim"):
     """
     Generate a fingerprint for a molecule using Indigo.
     
@@ -31,30 +52,11 @@ def fingerprint_molecule(molecule):
     """
 
     try:
-        fingerprint = molecule.fingerprint("sim").oneBitsList()
+        fingerprint = molecule.fingerprint(fp_type).oneBitsList()
         return ','.join(map(str, fingerprint))
     except Exception as e:
         print(f"Error generating fingerprint: {e}")
         return None
-
-def update_top_similarities(similarity_list, new_similarity, molecule, filename, top_count):
-    """
-    Update the list of top similarities with a new similarity score.
-
-    Args:
-        similarity_list (list): The current list of top similarities.
-        new_similarity (float): The new similarity score to be added.
-        molecule (IndigoObject): The Indigo molecule object associated with the similarity score.
-        filename (str): The filename associated with the molecule.
-        top_count (int): The maximum number of top similarities to retain in the list.
-
-    Returns:
-        list: The updated list of top similarities, sorted by similarity score in descending order.
-    """
-
-    similarity_list.append((new_similarity, molecule, filename))
-    similarity_list.sort(reverse=True, key=lambda x: x[0])
-    return similarity_list[:top_count]
 
 def filenames_from_file(filename):
     """
